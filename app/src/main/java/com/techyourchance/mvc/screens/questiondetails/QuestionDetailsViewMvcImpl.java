@@ -6,24 +6,46 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.questions.QuestionDetails;
-import com.techyourchance.mvc.screens.common.views.BaseViewMvc;
+import com.techyourchance.mvc.screens.common.ViewMvcFactory;
+import com.techyourchance.mvc.screens.common.toolbar.ToolbarViewMvc;
+import com.techyourchance.mvc.screens.common.views.BaseObservableViewMvc;
 
 
-public class QuestionDetailsViewMvcImpl extends BaseViewMvc implements QuestionDetailsViewMvc {
+public class QuestionDetailsViewMvcImpl extends BaseObservableViewMvc<QuestionDetailsViewMvc.Listener> implements QuestionDetailsViewMvc {
+    private final ToolbarViewMvc mToolbarViewMvc;
 
     private final TextView mTxtQuestionTitle;
     private final TextView mTxtQuestionBody;
     private final ProgressBar mProgressBar;
+    private final Toolbar mToolbar;
 
-    public QuestionDetailsViewMvcImpl(LayoutInflater inflater, ViewGroup container) {
+    public QuestionDetailsViewMvcImpl(LayoutInflater inflater, ViewGroup container, ViewMvcFactory viewMvcFactory) {
         setRootView(inflater.inflate(R.layout.layout_question_details, container, false));
 
         mTxtQuestionTitle = findViewById(R.id.txt_question_title);
         mTxtQuestionBody = findViewById(R.id.txt_question_body);
         mProgressBar = findViewById(R.id.progress);
+
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbarViewMvc = viewMvcFactory.getToolbarViewMvc(mToolbar);
+        initToolbar();
+    }
+
+    private void initToolbar() {
+        mToolbar.addView(mToolbarViewMvc.getRootView());
+        mToolbarViewMvc.setTitle(getString(R.string.questions_detail_screen_title));
+        mToolbarViewMvc.enableBackBtnAndListener(new ToolbarViewMvc.NavigateUpClickListener() {
+            @Override
+            public void onNavigateUpClicked() {
+                for (Listener listener : getListeners()) {
+                    listener.onNavigateUpClicked();
+                }
+            }
+        });
     }
 
     @Override
