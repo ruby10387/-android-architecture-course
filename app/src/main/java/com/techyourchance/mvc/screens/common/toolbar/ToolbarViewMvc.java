@@ -16,16 +16,27 @@ public class ToolbarViewMvc extends BaseViewMvc {
         void onNavigateUpClicked();
     }
 
+    public interface HamburgerClickListener {
+        void onHamburgerClicked();
+    }
+
     private final TextView mTxtTitle;
     private final ImageButton mBtnBack;
     private final ImageButton mBtnHamburger;
 
     private NavigateUpClickListener mNavigateUpClickListener;
+    private HamburgerClickListener mhamburgerClickListener;
 
     public ToolbarViewMvc(LayoutInflater inflater, ViewGroup parent) {
         setRootView(inflater.inflate(R.layout.layout_toolbar, parent, false));
         mTxtTitle = findViewById(R.id.txt_toolbar_title);
         mBtnHamburger = findViewById(R.id.btn_hamburger);
+        mBtnHamburger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mhamburgerClickListener.onHamburgerClicked();
+            }
+        });
         mBtnBack = findViewById(R.id.btn_back);
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +48,11 @@ public class ToolbarViewMvc extends BaseViewMvc {
 
     public void setTitle(String title) {
         mTxtTitle.setText(title);
+    }
+
+    public void enableHamburgerButtonAndListener(HamburgerClickListener hamburgerClickListener) {
+        mhamburgerClickListener = hamburgerClickListener;
+        mBtnHamburger.setVisibility(View.VISIBLE);
     }
 
     public void enableUpButtonAndListen(NavigateUpClickListener navigateUpClickListener) {

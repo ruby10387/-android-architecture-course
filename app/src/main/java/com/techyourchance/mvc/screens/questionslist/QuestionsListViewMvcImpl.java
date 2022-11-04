@@ -17,6 +17,7 @@ import com.techyourchance.mvc.screens.common.navdrawer.DrawerItems;
 import com.techyourchance.mvc.screens.common.toolbar.ToolbarViewMvc;
 import com.techyourchance.mvc.screens.common.views.BaseObservableViewMvc;
 import com.techyourchance.mvc.screens.common.ViewMvcFactory;
+import com.techyourchance.mvc.screens.questiondetails.QuestionDetailsViewMvc;
 
 import java.util.List;
 
@@ -46,7 +47,18 @@ public class QuestionsListViewMvcImpl extends BaseNavDrawerViewMvc<QuestionsList
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbarViewMvc = viewMvcFactory.getToolbarViewMvc(mToolbar);
+
+        initToolbar();
+    }
+
+    private void initToolbar() {
         mToolbarViewMvc.setTitle(getString(R.string.questions_list_screen_title));
+        mToolbarViewMvc.enableHamburgerButtonAndListener(new ToolbarViewMvc.HamburgerClickListener() {
+            @Override
+            public void onHamburgerClicked() {
+                openDrawer();
+            }
+        });
         mToolbar.addView(mToolbarViewMvc.getRootView());
     }
 
