@@ -17,6 +17,7 @@ public class QuestionsListFragment extends BaseFragment {
         return new QuestionsListFragment();
     }
 
+    private static final String SAVED_STATE_CONTROLLER = "SAVED_STATE_CONTROLLER";
     private QuestionsListController mQuestionsListController;
 
     @Nullable
@@ -25,6 +26,12 @@ public class QuestionsListFragment extends BaseFragment {
         QuestionsListViewMvc viewMvc = getCompositionRoot().getViewMvcFactory().getQuestionsListViewMvc(container);
 
         mQuestionsListController = getCompositionRoot().getQuestionsListController();
+        if (savedInstanceState != null) {
+            mQuestionsListController.restoreSavedState(
+                    (QuestionsListController.SavedState)
+                            savedInstanceState.getSerializable(SAVED_STATE_CONTROLLER)
+            );
+        }
         mQuestionsListController.bindView(viewMvc);
 
         return viewMvc.getRootView();
@@ -42,4 +49,9 @@ public class QuestionsListFragment extends BaseFragment {
         mQuestionsListController.onStop();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(SAVED_STATE_CONTROLLER, mQuestionsListController.getSavedState());
+    }
 }
